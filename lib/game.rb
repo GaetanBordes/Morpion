@@ -1,75 +1,70 @@
 class Game
-  def initialize 
-    @board = Board.new # nouveau plateau
-    @players = []  # liste des joueurs
-    @current_player  # joueur actuel
-    @game_over = false # état de la partie
+  def initialize(show)
+    @board = Board.new # Crée un nouveau plateau
+    @players = []      # Liste des joueurs
+    @current_player = nil # Joueur actuel
+    @game_over = false # État de la partie
+    @show = show       # Instance de Show pour l'affichage
   end
 
-  def setup_players # initialise les joueurs
+  # Initialise les joueurs
+  def setup_players
     puts "Entrez le prénom du joueur 1 (X) :"
-    name1 = gets.chomp # joueur 1
-    @players << Player.new(name1, "X") # crée le joueur 1 avec X
+    name1 = gets.chomp # Demande le nom du joueur 1
+    @players << Player.new(name1, "X") # Crée le joueur 1 avec le symbole X
 
     puts "Entrez le prénom du joueur 2 (O) :"
-    name2 = gets.chomp # joueur 2
-    @players << Player.new(name2, "O") # crée le joueur 2 avec O
+    name2 = gets.chomp # Demande le nom du joueur 2
+    @players << Player.new(name2, "O") # Crée le joueur 2 avec le symbole O
 
-    @current_player = @players.first
+    @current_player = @players.first # Commence avec le joueur 1
   end
 
-  def start # commence le jeu
-    setup_players
-    until @game_over # boucle jusqu'à la fin
-      @board.display # affiche le plateau
-      play_turn # joue un tour
-      check_game_over # vérifie si partie terminée
-      switch_player unless @game_over # change de joueur a part si partie terminée
+  # Démarre le jeu
+  def start
+    setup_players # Initialise les joueurs
+    until @game_over # Boucle jusqu'à la fin de la partie
+      @show.display_board(@board.current_state) # Affiche le plateau
+      play_turn      # Joue un tour
+      check_game_over # Vérifie si la partie est terminée
+      switch_player unless @game_over # Change de joueur sauf si la partie est finie
     end
-    play_again? # rejouer ?
   end
 
+  # Gère un tour de jeu
   def play_turn
-    puts "#{@current_player.name}, sélectionnez une case vide !" # tour de jeu
-    position = gets.chomp.upcase
+    puts "#{@current_player.name}, où souhaitez-vous jouer ? (ex: A1)"
+    position = gets.chomp.upcase # Demande la position au joueur
 
-    if valid_move?(position) # vérifie si position valide
-      @board.place_symbol(position, @current_player.symbol) # place le symbole
+    if valid_move?(position) # Vérifie si la position est valide
+      @board.place_symbol(position, @current_player.symbol) # Place le symbole
     else
-      puts "Position invalide, Réessayez." # message d'erreur
-      play_turn # demande la position à nouveau
+      puts "Position invalide. Réessayez." # Affiche un message d'erreur
+      play_turn # Redemande la position
     end
   end
 
-  def valid_move?(position) 
+  # Vérifie si la position est valide
+  def valid_move?(position)
+    # Vérifie que la position est au format "A1", "B2", etc. et que la case est vide
     position.match?(/^[A-C][1-3]$/) && @board.cell_empty?(position)
   end
 
-  def check_game_over # vérification partie terminée
-    if @board.winner?(@current_player.symbol)
-      @board.display
-      puts "#{@current_player.name} a gagné !" # vérifie si le joueur actuel a gagné
+  # Vérifie si la partie est terminée
+  def check_game_over
+    if @board.winner?(@current_player.symbol) # Vérifie si le joueur actuel a gagné
+      @show.display_board(@board.current_state) # Affiche le plateau
+      @show.display_winner(@current_player) # Affiche le gagnant
       @game_over = true
-    elsif @board.full? # vérifie si plateau plein = match nul
-      @board.display
-      puts "Match nul !"
+    elsif @board.full? # Vérifie si le plateau est plein (match nul)
+      @show.display_board(@board.current_state) # Affiche le plateau
+      @show.display_draw # Affiche un message de match nul
       @game_over = true
     end
   end
 
-  def switch_player # change de joueur
+  # Change de joueur
+  def switch_player
     @current_player = @current_player == @players.first ? @players.last : @players.first
-  end
-
-  def play_again? # propose de rejouer
-    puts "Voulez-vous rejouer ? (O/N)"
-    answer = gets.chomp.upcase
-    if answer == "O"
-      @board = Board.new
-      @game_over = false
-      start
-    else
-      puts "Merci d'avoir joué !"
-    end
   end
 end

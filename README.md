@@ -10,6 +10,6 @@ Un jeu de morpion (tic-tac-toe) codé en Ruby, utilisant la programmation orient
 
 ## Structure du projet
 
-- `lib/` : Contient les classes du jeu (`player.rb`, `board.rb`, `game.rb`).
-- `app.rb` : Point d'entrée du programme.
-- `Gemfile` : Liste des dépendances du projet.
+- 'lib/' : Contient les classes du jeu ('player.rb', 'board.rb', 'game.rb', 'board_case.rb', 'show.rb', 'application.rb').
+- 'app.rb' : Point d'entrée du programme.
+- 'Gemfile' : Liste des dépendances du projet.

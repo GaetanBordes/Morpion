@@ -1,10 +1,11 @@
 require 'bundler/setup'
 Bundler.require
 
-require_relative 'lib/player.rb'
-require_relative 'lib/board.rb'
-require_relative 'lib/game.rb'
-require_relative 'lib/board_case.rb'
+require_relative 'lib/player'
+require_relative 'lib/board'
+require_relative 'lib/show'
+require_relative 'lib/game'
+require_relative 'lib/application'
 
-game = Game.new
-game.start 
+app = Application.new
+app.start
